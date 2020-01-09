@@ -72,8 +72,8 @@ resource "aws_iam_role_policy_attachment" "ecr-read" {
   role       = aws_iam_role.spinnaker-managed.id
 }
 
-resource "aws_iam_role_policy_attachment" "cfn-read" {
-  policy_arn = "arn:aws:iam::aws:policy/AWSCloudFormationReadOnlyAccess"
+resource "aws_iam_role_policy_attachment" "cfn-full-accs" {
+  policy_arn = "arn:aws:iam::aws:policy/AWSCloudFormationFullAccess"
   role       = aws_iam_role.spinnaker-managed.id
 }
 
