@@ -2,6 +2,9 @@
 # current region
 data "aws_region" "current" {}
 
+# Use this data source to lookup information about the current AWS partition in which Terraform is working.
+data "aws_partition" "current" {}
+
 locals {
   alias_region  = substr(data.aws_region.current.name, 0, 2) == "cn" ? ".cn" : ""
   alias_service = "amazonaws.com${local.alias_region}"
@@ -38,47 +41,47 @@ data "aws_iam_policy_document" "spinnaker-managed-trusted" {
 }
 
 resource "aws_iam_role_policy_attachment" "vpc-full-accs" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonVPCFullAccess"
+  policy_arn = format("arn:%s:iam::aws:policy/AmazonVPCFullAccess", data.aws_partition.current.partition)
   role       = aws_iam_role.spinnaker-managed.id
 }
 
 resource "aws_iam_role_policy_attachment" "ec2-full-accs" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
+  policy_arn = format("arn:%s:iam::aws:policy/AmazonEC2FullAccess", data.aws_partition.current.partition)
   role       = aws_iam_role.spinnaker-managed.id
 }
 
 resource "aws_iam_role_policy_attachment" "ecs-full-accs" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonECS_FullAccess"
+  policy_arn = format("arn:%s:iam::aws:policy/AmazonECS_FullAccess", data.aws_partition.current.partition)
   role       = aws_iam_role.spinnaker-managed.id
 }
 
 resource "aws_iam_role_policy_attachment" "ecs-task-exec" {
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+  policy_arn = format("arn:%s:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy", data.aws_partition.current.partition)
   role       = aws_iam_role.spinnaker-managed.id
 }
 
 resource "aws_iam_role_policy_attachment" "secret-manager" {
-  policy_arn = "arn:aws:iam::aws:policy/SecretsManagerReadWrite"
+  policy_arn = format("arn:%s:iam::aws:policy/SecretsManagerReadWrite", data.aws_partition.current.partition)
   role       = aws_iam_role.spinnaker-managed.id
 }
 
 resource "aws_iam_role_policy_attachment" "lambda-full-accs" {
-  policy_arn = "arn:aws:iam::aws:policy/AWSLambdaFullAccess"
+  policy_arn = format("arn:%s:iam::aws:policy/AWSLambdaFullAccess", data.aws_partition.current.partition)
   role       = aws_iam_role.spinnaker-managed.id
 }
 
 resource "aws_iam_role_policy_attachment" "ecr-read" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+  policy_arn = format("arn:%s:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly", data.aws_partition.current.partition)
   role       = aws_iam_role.spinnaker-managed.id
 }
 
 resource "aws_iam_role_policy_attachment" "cfn-read" {
-  policy_arn = "arn:aws:iam::aws:policy/AWSCloudFormationReadOnlyAccess"
+  policy_arn = format("arn:%s:iam::aws:policy/AWSCloudFormationReadOnlyAccess", data.aws_partition.current.partition)
   role       = aws_iam_role.spinnaker-managed.id
 }
 
 resource "aws_iam_role_policy_attachment" "iam-read" {
-  policy_arn = "arn:aws:iam::aws:policy/IAMReadOnlyAccess"
+  policy_arn = format("arn:%s:iam::aws:policy/IAMReadOnlyAccess", data.aws_partition.current.partition)
   role       = aws_iam_role.spinnaker-managed.id
 }
 
